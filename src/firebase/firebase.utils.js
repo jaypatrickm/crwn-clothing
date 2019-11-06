@@ -2,6 +2,8 @@ import firebase from 'firebase/app';
 import 'firebase/firestore';
 import 'firebase/auth';
 
+//Firebase is our database
+
 //It is okay to expose this apikey. it is a public apikey
 const config = {
   apiKey: 'AIzaSyBCW-BEbFy0Z83otasr0orCjKf2WkwtxB8',
@@ -18,6 +20,36 @@ firebase.initializeApp(config);
 
 export const auth = firebase.auth();
 export const firestore = firebase.firestore();
+
+export const createUserProfileDocument = async (userAuth, additionalData) => {
+  if (!userAuth) return;
+
+  //query inside firestore to see if it exists
+  //documentRef we perform CRUD operations
+  //.set(), .get(), .update(), .delete()
+  //collectionRef .add()
+
+  const userRef = firestore.doc(`users/${userAuth.uid}`);
+
+  const snapShot = await userRef.get();
+
+  if (!snapShot.exists) {
+    const { displayName, email } = userAuth;
+    const createdAt = new Date();
+
+    try {
+      await userRef.set({
+        displayName,
+        email,
+        createdAt,
+        ...additionalData
+      });
+    } catch (error) {
+      console.log('error creating user', error.message);
+    }
+  }
+  return userRef;
+};
 
 const provider = new firebase.auth.GoogleAuthProvider();
 //always trigger google popup when this google auth provider is used

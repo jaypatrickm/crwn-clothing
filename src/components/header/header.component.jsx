@@ -27,7 +27,7 @@ const Header = ({ currentUser, hidden }) => (
           SIGN OUT
         </OptionLink>
       ) : (
-        <OptionLink to="/signin"></OptionLink>
+        <OptionLink to="/signin">SIGN IN</OptionLink>
       )}
       <CartIcon />
     </OptionsContainer>
